@@ -1,0 +1,183 @@
+;;; -*- lexical-binding: t -*-
+
+;; -------------------------------
+;; Package system
+;; -------------------------------
+(require 'package)
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("gnu"   . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+
+
+
+;; -------------------------------
+;; Theme: Doom Gruvbox (persist)
+;; -------------------------------
+(require 'doom-themes)
+(load-theme 'doom-gruvbox t)
+
+
+
+;; -------------------------------
+;; Common Lisp / SBCL / SLIME
+;; -------------------------------
+(setq inferior-lisp-program "/opt/homebrew/bin/sbcl")
+
+
+;; -------------------------------
+;; MIT Scheme
+;; -------------------------------
+(setq scheme-program-name  "/opt/homebrew/bin/scheme")
+
+
+
+;; Load SLIME only if present (prevents init crash)
+(when (require 'slime nil 'noerror)
+  (slime-setup '(slime-fancy)))
+
+
+;; -------------------------------
+;; Split windows vertically
+;; -------------------------------
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (split-window-right)
+            (other-window 1)))
+
+
+;; -------------------------------
+;; Disable splash screen
+;; -------------------------------
+(setq inhibit-startup-screen t)
+
+;; -------------------------------
+;; Maximize windows at start
+;; -------------------------------
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+
+;; -------------------------------
+;; Line Number Management
+;; -------------------------------
+(global-display-line-numbers-mode)
+
+;; relative line numbers
+;; (setq display-line-numbers-type 'relative)
+
+;; show line and column numbers in mode line
+(column-number-mode t)
+
+
+;; -------------------------------
+;; Brackets Management
+;; -------------------------------
+;; brackets automatically
+(electric-pair-mode t)
+
+;; highlight matching brackets
+(show-paren-mode t)
+
+;; Show matching parens instantly (or near-instant)
+(setq show-paren-delay 0)
+
+
+;; -------------------------------
+;; Paredit (structural editing for Lisp/Scheme)
+;; -------------------------------
+;; installed paredit from MELPA.
+;; This will only enable it if the library is available (no startup errors).
+(when (require 'paredit nil 'noerror)
+  ;; Enable paredit automatically in Lisp / Scheme buffers
+  (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+  (add-hook 'lisp-mode-hook #'paredit-mode)
+  (add-hook 'scheme-mode-hook #'paredit-mode)
+
+  ;; Optional: also in Lisp interaction buffers
+  (add-hook 'lisp-interaction-mode-hook #'paredit-mode)
+
+  ;; Optional: make M-( wrap the next expression (nice for Lisp)
+  ;; (define-key paredit-mode-map (kbd "M-(") #'paredit-wrap-round)
+
+  ;; Optional: don't let paredit complain about spaces around delimiters
+  ;; (setq paredit-space-for-delimiter-predicates nil)
+  )
+
+
+
+
+;; -------------------------------
+;; Cursor & Line management
+;; -------------------------------
+;; set the defualt cursor type - box, bar, hollow, underline
+(setq-default cursor-type 'box)
+
+;; disable cursor blink - 0 or 1
+(blink-cursor-mode 0)
+
+;; set cursor color
+(set-cursor-color "#00FF7F")
+
+;; for neon green the color is #39FF14
+
+;; Highlight current line everywhere
+(global-hl-line-mode 1)
+
+;; Only customize hl-line *after* it's available
+(with-eval-after-load 'hl-line
+  (set-face-background 'hl-line "#303030"))  ;; subtle green tint
+
+;; Re-apply after themes load (themes can override faces)
+(advice-add 'load-theme :after
+            (lambda (&rest _)
+              (when (facep 'hl-line)
+                (set-face-background 'hl-line "#303030"))))
+
+
+
+
+;; -------------------------------
+;; Global font settings
+;; -------------------------------
+(set-face-attribute 'default nil :height 160)
+
+
+;; -------------------------------
+;; Delete highlighted area
+;; -------------------------------
+(delete-selection-mode 1)
+
+
+
+
+
+
+
+;; -------------------------------
+;; Custom (leave ONE instance, at end)
+;; -------------------------------
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("4594d6b9753691142f02e67b8eb0fda7d12f6cc9f1299a49b819312d6addad1d"
+     "8363207a952efb78e917230f5a4d3326b2916c63237c1f61d7e5fe07def8d378"
+     "75b371fce3c9e6b1482ba10c883e2fb813f2cc1c88be0b8a1099773eb78a7176"
+     "fff0dc54ff5a194ba6593d1cce0fbb4fe8cf9da59fcef47f9e06dec6ef11b1fa"
+     "6dcf1ca4c7432773084b9d52649ee5eb2c663131c4c06859f648dea98d9acb3e"
+     "8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098"
+     "b7a09eb77a1e9b98cafba8ef1bd58871f91958538f6671b22976ea38c2580755"
+     "f1e8339b04aef8f145dd4782d03499d9d716fdc0361319411ac2efc603249326"
+     default))
+ '(package-selected-packages '(doom-themes gruvbox-theme slime)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
+

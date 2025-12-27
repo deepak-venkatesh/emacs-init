@@ -85,7 +85,7 @@
 ;; -------------------------------
 ;; Paredit (structural editing for Lisp/Scheme)
 ;; -------------------------------
-;; installed paredit from MELPA.
+;; Assumes you already installed paredit from MELPA.
 ;; This will only enable it if the library is available (no startup errors).
 (when (require 'paredit nil 'noerror)
   ;; Enable paredit automatically in Lisp / Scheme buffers
@@ -102,7 +102,6 @@
   ;; Optional: don't let paredit complain about spaces around delimiters
   ;; (setq paredit-space-for-delimiter-predicates nil)
   )
-
 
 
 
@@ -148,11 +147,56 @@
 (delete-selection-mode 1)
 
 
+;; -------------------------------
+;; C Programming Setup
+;; -------------------------------
+
+;; Use clang with warnings
+(setq compile-command "clang -std=c23 -Wall -Wextra ")
+
+;; Indentation
+(setq-default c-basic-offset 4)
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)  ;; spaces, not tabs
+
+;; Auto-scroll compilation output
+(setq compilation-scroll-output t)
+
+;; Compile current C file into ./a.out
+(defun deepak-c-compile ()
+  "Compile the current C file into ./a.out using clang."
+  (interactive)
+  (unless (buffer-file-name)
+    (user-error "Buffer is not visiting a file"))
+  (save-buffer)
+  (compile
+   (format "clang -std=c23 -Wall -Wextra %s -o a.out"
+           (shell-quote-argument (buffer-file-name)))))
+
+;; Run ./a.out
+(defun deepak-c-run ()
+  "Run ./a.out."
+  (interactive)
+  (compile "./a.out"))
+
+;; Keybindings (C mode only)
+(with-eval-after-load 'cc-mode
+  (define-key c-mode-map (kbd "C-c C-c") #'deepak-c-compile)
+  (define-key c-mode-map (kbd "C-c C-r") #'deepak-c-run))
 
 
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; -------------------------------
 ;; Custom (leave ONE instance, at end)
 ;; -------------------------------
